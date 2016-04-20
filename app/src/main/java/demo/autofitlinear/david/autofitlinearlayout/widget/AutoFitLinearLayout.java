@@ -2,6 +2,7 @@ package demo.autofitlinear.david.autofitlinearlayout.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 
 /**
@@ -9,21 +10,49 @@ import android.view.ViewGroup;
  */
 public class AutoFitLinearLayout extends ViewGroup {
 
+    private static final String TAG = "AutoFitLinearLayout";
+
+    private int width = 0;
+
     public AutoFitLinearLayout(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public AutoFitLinearLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public AutoFitLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+    }
+
+    public void setDefaultValue() {
+        
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+
+        int totalViewCount = getChildCount();
+        int visibleViewCount = 0;
+        for(int i = 0; i < totalViewCount;i++) {
+            if(getChildAt(i).getVisibility() != View.GONE) visibleViewCount++;
+        }
+
+        for(int i = 0, j = 0; i < totalViewCount && j < visibleViewCount; i++) {
+            View childAt = getChildAt(i);
+            if(childAt.getVisibility() != View.GONE) {
+                LayoutParams lp = childAt.getLayoutParams();
+                childAt.measure(getChildMeasureSpec(widthMeasureSpec, getPaddingLeft() + getPaddingRight(), lp.width), heightMeasureSpec);
+                childAt.getMeasuredHeight();
+                j++;
+            }
+        }
     }
 
     @Override
