@@ -28,7 +28,7 @@ public class AutoFitLinearLayout extends ViewGroup {
     }
 
     public void setDefaultValue() {
-        
+
     }
 
     @Override
